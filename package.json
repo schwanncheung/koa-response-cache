@@ -1,0 +1,36 @@
+{
+  "name": "koa-response-cache",
+  "version": "1.0.1",
+  "description": "a middleware for koa to cache response with redis.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schwann168/koa-response-cache.git"
+  },
+  "keywords": [
+    "middleware",
+    "response",
+    "redis",
+    "cache",
+    "koa"
+  ],
+  "author": "schwann168",
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "Readme.md"
+  ],
+  "bugs": {
+    "url": "https://github.com/schwann168/koa-response-cache/issues"
+  },
+  "homepage": "https://github.com/schwann168/koa-response-cache#readme",
+  "dependencies": {
+    "co-redis": "2",
+    "path-to-regexp": "1",
+    "readall": "1",
+    "redis": "2"
+  }
+}
