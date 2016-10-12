@@ -11,6 +11,12 @@ extend from `koa-redis-cache`
 [https://github.com/coderhaoxin/koa-redis-cache](https://github.com/coderhaoxin/koa-redis-cache)
 
 
+### Extra Features:
+
+* support extra match condition. (eg. when mobile visit not get from cache)
+* support cache backup, cache backup for high availability.
+
+
 ### Installation
 ```bash
 $ npm install koa-response-cache
@@ -19,69 +25,73 @@ $ npm install koa-response-cache
 ### Example
 
 ```js
-const cache = require('koa-response-cache')
-const koa = require('koa')
-const app = koa()
+const cache = require('koa-response-cache');
+const koa = require('koa');
+const app = koa();
 
 let options = {
   expire: 60,
-  routes: ['/index'],
-  condition: function (ctx) {
-      const userAgent = ctx.headers['user-agent'] || '';
-      const match = userAgent.match(/(iphone|ipod|ipad|android|phone|pad|pod|mobile)/ig);
-      return !match;
-  },
+  routes: ['/index']
 }
 
-app.use(cache(options))
+app.use(cache(options));
 ```
 
 ### options
 
 * prefix
-  - type: `String` or `Function`
-  - redis key prefix, default is `koa-response-cache:`
-  - If a function is supplied, its signature should be `function(ctx) {}` and it should return a string to use as the redis key prefix
+    - type: `String` or `Function`
+    - redis key prefix, default is `koa-response-cache:`
+    - if a function is supplied, its signature should be `function(ctx) {}` and it should return a string to use as the redis key prefix
 * expire
-  - type: `Number`
-  - redis expire time (second), default is `30 * 60` (30 min)
+    - type: `Number`
+    - redis expire time (second), default is `30 * 60` (30 min)
 * passParam
-  - type: `String`
-  - if the passParam is existed in query string, not get from cache
+    - type: `String`
+    - if the passParam is existed in query string, not get from cache
 * maxLength
-  - type: `Number`
-  - max length of the body to cache
+    - type: `Number`
+    - max length of the body to cache
 * routes
-  - type: `Array`
-  - the routes to cache, default is `['(.*)']`
-  - It could be `['/api/(.*)', '/view/:id']`, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
+    - type: `Array`
+    - the routes to cache, default is `['(.*)']`
+    - it could be `['/api/(.*)', '/view/:id']`, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
 * exclude
-  - type: `Array`
-  - the routes to exclude, default is `[]`
-  - It could be `['/api/(.*)', '/view/:id']`, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
-* onerror
-  - type: `Function`
-  - callback function for error, default is `function() {}`
+    - type: `Array`
+    - the routes to exclude, default is `[]`
+    - it could be `['/api/(.*)', '/view/:id']`, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
+* onError
+    - type: `Function`
+    - callback function for error, default is `function() {}`
 * condition
-  - type: `Function`
-  - should be `function(ctx) {}` and it should return `true` or `false` to match redis cache condition
+    - type: `Function`
+    - should be `function(ctx) {}` and it should return `true` or `false` to match redis cache condition
+* isBackup
+    - type: `Boolean`
+    - if set to `true`, then cache will backup, default is `false`
+* expireDump
+    - type: `Number`
+    - backup redis expire time (second), default is `120 * 60` (2 hours)
+* checkDump
+    - type: `Function`
+    - should be `function(ctx) {}` and it should return `true` or `false`, if return `true` then will return backup cache
 * redis
-  - type: `Object`
-  - redis options
+    - type: `Object`
+    - redis options
 * redis.port
-  - type: `Number`
+    - type: `Number`
 * redis.host
-  - type: `String`
+    - type: `String`
 * redis.options
-  - type: `Object`
-  - see [node_redis](https://github.com/mranney/node_redis)
+    - type: `Object`
+    - see [node_redis](https://github.com/mranney/node_redis)
 
 ### set different expire for each route
 
 ```js
-const cache = require('koa-response-cache')
-const koa = require('koa')
-const app = koa()
+const cache = require('koa-response-cache');
+const koa = require('koa');
+const app = koa();
 
 let options = {
   routes: [{
@@ -93,12 +103,12 @@ let options = {
   }]
 }
 
-app.use(cache(options))
+app.use(cache(options));
 ```
 
 ### notes
 
-* `koa-response-cache` will set a custom http header `X-Koa-Response-Cache: true` when the response is from cache
+* `koa-response-cache` will set a custom http header `X-Koa-Response-Cache: true` when the response is from cache, and will set `X-Koa-Response-Cache: false` when the response is from backup cache.
 
 ### License
 MIT

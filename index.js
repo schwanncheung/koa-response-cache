@@ -2,7 +2,7 @@
 
 const pathToRegExp = require('path-to-regexp');
 const wrapper = require('co-redis');
-const readall = require('readall');
+const readAll = require('readall');
 const Redis = require('redis');
 
 module.exports = function (options) {
@@ -15,7 +15,7 @@ module.exports = function (options) {
     const exclude = options.exclude || [];
     const passParam = options.passParam || '';
     const maxLength = options.maxLength || Infinity;
-    const onerror = options.onerror || function () {};
+    const onError = options.onError || function () {};
     const condition = options.condition || null;
     const isBackup = options.isBackup || false;
     const expireDump = options.expireDump || 120 * 60;  // 2 hours
@@ -30,7 +30,7 @@ module.exports = function (options) {
     const redisClient = wrapper(Redis.createClient(redisOptions.url, redisOptions.options));
     redisClient.on('error', (error)=> {
         redisAvailable = false;
-        onerror(error)
+        onError(error)
     });
     redisClient.on('end', () => {
         redisAvailable = false
@@ -88,9 +88,9 @@ module.exports = function (options) {
         let ok = false;
         try {
             if (isDump) {
-                ok = yield getCache(ctx, dumpKey, tDumpKey);
+                ok = yield getCache(ctx, dumpKey, tDumpKey, isDump);
             } else {
-                ok = yield getCache(ctx, key, tKey);
+                ok = yield getCache(ctx, key, tKey, isDump);
             }
         } catch (e) {
             ok = false
@@ -119,7 +119,7 @@ module.exports = function (options) {
     /**
      * getCache
      */
-    function * getCache(ctx, key, tKey) {
+    function * getCache(ctx, key, tKey, isDump) {
         let value = yield redisClient.get(key);
         let type;
         let ok = false;
@@ -127,13 +127,13 @@ module.exports = function (options) {
         if (value) {
             ctx.response.status = 200;
             type = (yield redisClient.get(tKey)) || 'text/html';
-            ctx.response.set('X-Koa-Response-Cache', 'true');
+            ctx.response.set('X-Koa-Response-Cache', isDump ? 'false' : 'true');
             ctx.response.type = type;
             ctx.response.body = value;
-            ok = true
+            ok = true;
         }
 
-        return ok
+        return ok;
     }
 
     /**
@@ -194,7 +194,7 @@ function paired(route, path) {
 
 function read(stream) {
     return new Promise((resolve, reject) => {
-        readall(stream, (err, data) => {
+        readAll(stream, (err, data) => {
             if (err) {
                 reject(err)
             } else {
