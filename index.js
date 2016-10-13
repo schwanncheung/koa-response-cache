@@ -78,7 +78,9 @@ module.exports = function (options) {
         }
 
         if (condition && typeof condition === 'function') {
-            match = condition.call(ctx, ctx);
+            if(!condition.call(ctx, ctx)) {
+                match = false;
+            }
         }
 
         if (!match || (passParam && ctx.request.query[passParam])) {
