@@ -30,7 +30,7 @@
   "dependencies": {
     "co-redis": "2",
     "path-to-regexp": "1",
-    "readall": "1",
+    "readall": "1.1.0",
     "redis": "2"
   }
 }
