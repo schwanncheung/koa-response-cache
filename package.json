@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/schwann168/koa-response-cache.git"
+    "url": "https://github.com/schwanncheung/koa-response-cache.git"
   },
   "keywords": [
     "middleware",
@@ -17,16 +17,16 @@
     "cache",
     "koa"
   ],
-  "author": "schwann168",
+  "author": "Schwann",
   "license": "MIT",
   "files": [
     "index.js",
     "Readme.md"
   ],
   "bugs": {
-    "url": "https://github.com/schwann168/koa-response-cache/issues"
+    "url": "https://github.com/schwanncheung/koa-response-cache/issues"
   },
-  "homepage": "https://github.com/schwann168/koa-response-cache#readme",
+  "homepage": "https://github.com/schwanncheung/koa-response-cache#readme",
   "dependencies": {
     "co-redis": "2",
     "path-to-regexp": "1",
